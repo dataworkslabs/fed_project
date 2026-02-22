@@ -1,0 +1,7 @@
+jupyter
+notebook
+fredapi
+pandas
+altair
+python-dotenv
+requests
