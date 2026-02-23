@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fed's Bubble Transfer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --blue: #1a3a5c;
+    --gold: #d4870a;
+    --teal: #16a085;
+    --purple: #7d3c98;
+    --dark: #141414;
+    --bg: #f7f6f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    padding: 36px 20px 60px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .header h1 em { color: var(--red); font-style: normal; }
+
+  .header p {
+    font-size: 0.97rem;
+    color: #777;
+    margin-top: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .thesis {
+    background: var(--blue);
+    color: white;
+    text-align: center;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    max-width: 820px;
+    margin: 18px auto 36px;
+    border-radius: 4px;
+  }
+
+  /* ── STAGE CONTROLS ── */
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .stage-btn {
+    padding: 8px 18px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #888;
+  }
+
+  .stage-btn:hover {
+    border-color: #aaa;
+    color: var(--dark);
+  }
+
+  .stage-btn.active {
+    background: var(--dark);
+    border-color: var(--dark);
+    color: white;
+  }
+
+  .stage-btn.era1.active { background: var(--blue); border-color: var(--blue); }
+  .stage-btn.era2.active { background: var(--gold); border-color: var(--gold); }
+  .stage-btn.era3.active { background: var(--red); border-color: var(--red); }
+  .stage-btn.era4.active { background: var(--purple); border-color: var(--purple); }
+
+  /* ── MAIN STAGE ── */
+  .stage {
+    max-width: 980px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e8e5e0;
+    padding: 32px 28px 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    min-height: 380px;
+    position: relative;
+  }
+
+  /* ── BUBBLE ROW ── */
+  .bubble-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    padding-bottom: 16px;
+    min-height: 260px;
+  }
+
+  /* ── INDIVIDUAL BUBBLE UNIT ── */
+  .bubble-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .bubble-circle {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    cursor: default;
+  }
+
+  .bubble-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0 6px;
+    transition: font-size 0.8s;
+  }
+
+  .bubble-date {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  /* ── TRANSFER ARROW ── */
+  .t-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 30px;
+    width: 48px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s;
+    transform: scale(0.8);
+  }
+
+  .t-arrow.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .t-arrow-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--red);
+    text-align: center;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .t-arrow-svg {
+    width: 28px;
+    height: 32px;
+  }
+
+  /* ── BUBBLE LABELS BELOW ── */
+  .bubble-footer {
+    text-align: center;
+    margin-top: 10px;
+    transition: all 0.6s;
+  }
+
+  .bubble-sector {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--dark);
+    display: block;
+  }
+
+  .bubble-status {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    transition: all 0.6s;
+  }
+
+  /* ── NARRATIVE PANEL ── */
+  .narrative-panel {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f0ede8;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    transition: all 0.5s;
+  }
+
+  .narrative-item {
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: #faf9f6;
+  }
+
+  .narrative-item .n-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .narrative-item .n-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .narrative-item .n-text {
+    font-size: 0.78rem;
+    color: #666;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  .narrative-item .n-stat {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .narrative-item .n-stat span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  /* ── ERA CARDS BELOW STAGE ── */
+  .era-cards {
+    max-width: 980px;
+    margin: 24px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  .era-card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px 14px;
+    border: 1px solid #e8e5e0;
+    border-top-width: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.5;
+  }
+
+  .era-card:hover { opacity: 0.8; transform: translateY(-2px); }
+  .era-card.active { opacity: 1; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+  .era-card.c1 { border-top-color: var(--blue); }
+  .era-card.c2 { border-top-color: var(--gold); }
+  .era-card.c3 { border-top-color: var(--red); }
+  .era-card.c4 { border-top-color: var(--purple); }
+
+  .era-card .e-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .era-card.c1 .e-tag { color: var(--blue); }
+  .era-card.c2 .e-tag { color: var(--gold); }
+  .era-card.c3 .e-tag { color: var(--red); }
+  .era-card.c4 .e-tag { color: var(--purple); }
+
+  .era-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .era-card p {
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .era-card .e-stat {
+    margin-top: 8px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: var(--dark);
+    padding-top: 8px;
+    border-top: 1px solid #f0ede8;
+  }
+
+  .era-card .e-stat span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    max-width: 980px;
+    margin: 20px auto 0;
+    background: var(--dark);
+    color: white;
+    padding: 20px 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .bottom-bar .icon { font-size: 2rem; flex-shrink: 0; }
+
+  .bottom-bar p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.75);
+    font-weight: 300;
+  }
+
+  .bottom-bar p strong { color: #e8c56a; font-weight: 600; }
+
+  .source {
+    text-align: center;
+    font-size: 0.68rem;
+    color: #aaa;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    max-width: 980px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .progress-segment {
+    flex: 1;
+    height: 5px;
+    background: #e5e3df;
+    transition: background 0.4s;
+    position: relative;
+  }
+
+  .progress-segment:first-child { border-radius: 3px 0 0 3px; }
+  .progress-segment:last-child { border-radius: 0 3px 3px 0; }
+  .progress-segment.done.s1 { background: var(--blue); }
+  .progress-segment.done.s2 { background: var(--gold); }
+  .progress-segment.done.s3 { background: var(--red); }
+  .progress-segment.done.s4 { background: var(--purple); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Risk Doesn't Disappear — <em>It Transfers</em></h1>
+  <p>Every time the Fed cuts rates to fix a crash, cheap money inflates a new bubble somewhere else. Watch each bubble grow, pop, and transfer its risk to the next sector.</p>
+</div>
+
+<div class="thesis">
+  The Fed's mandate was never sustainable: each rescue transfers systemic risk to the next sector — inflating a larger bubble each time
+</div>
+
+<!-- STAGE BUTTONS -->
+<div class="controls">
+  <button class="stage-btn era1 active" onclick="setStage(1)">Era 1 — Dot-Com</button>
+  <button class="stage-btn era2" onclick="setStage(2)">Era 2 — Housing</button>
+  <button class="stage-btn era3" onclick="setStage(3)">Era 3 — Everything</button>
+  <button class="stage-btn era4" onclick="setStage(4)">Era 4 — AI (Now)</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="progress-segment s1 done" id="prog1"></div>
+  <div class="progress-segment s2" id="prog2"></div>
+  <div class="progress-segment s3" id="prog3"></div>
+  <div class="progress-segment s4" id="prog4"></div>
+</div>
+
+<!-- MAIN STAGE -->
+<div class="stage">
+  <div class="bubble-row" id="bubbleRow">
+    <!-- Rendered by JS -->
+  </div>
+  <div class="narrative-panel" id="narrativePanel">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ERA CARDS -->
+<div class="era-cards">
+  <div class="era-card c1 active" id="card1" onclick="setStage(1)">
+    <span class="e-tag">Era 1 — 2000</span>
+    <h4>The Dot-Com Bubble</h4>
+    <p>Low rates fueled speculation in internet stocks with no earnings. When reality hit, NASDAQ collapsed.</p>
+    <div class="e-stat"><span style="color:var(--blue)">78%</span>NASDAQ decline 2000–2002</div>
+  </div>
+  <div class="era-card c2" id="card2" onclick="setStage(2)">
+    <span class="e-tag">Era 2 — 2008</span>
+    <h4>The Housing Bubble</h4>
+    <p>Post dot-com rates of 1% made mortgages nearly free. Housing prices surged 70% — then collapsed.</p>
+    <div class="e-stat"><span style="color:var(--gold)">$11T</span>Household wealth destroyed</div>
+  </div>
+  <div class="era-card c3" id="card3" onclick="setStage(3)">
+    <span class="e-tag">Era 3 — 2022</span>
+    <h4>The Everything Bubble</h4>
+    <p>Zero rates for 7 years then zero again for COVID. Every asset class inflated simultaneously.</p>
+    <div class="e-stat"><span style="color:var(--red)">9.1%</span>Peak inflation, June 2022</div>
+  </div>
+  <div class="era-card c4" id="card4" onclick="setStage(4)">
+    <span class="e-tag">Era 4 — Now</span>
+    <h4>The AI Bubble?</h4>
+    <p>Political pressure mounts on the Fed to cut rates again. AI valuations have surged dramatically.</p>
+    <div class="e-stat"><span style="color:var(--purple)">800%+</span>NVIDIA gain since 2022</div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="icon">⚠️</div>
+  <p><strong>The risk never disappears — it transfers.</strong> Each Fed rescue pushes cheap money into a new sector. That sector inflates. When it pops, the Fed cuts rates again. Each cycle, the bubble is <strong>larger and more dangerous</strong> than the last. The underlying structural problem is never fixed — only deferred. <strong>This is the mandate's fatal flaw.</strong></p>
+</div>
+
+<div class="source">
+  Data: Federal Reserve FRED API · Case-Shiller Home Price Index · NASDAQ Composite · Bureau of Labor Statistics
+</div>
+
+<script>
+  // ── STAGE DATA ──────────────────────────────────────────────
+  const stages = {
+    1: {
+      title: 'Era 1 — Dot-Com Bubble',
+      bubbles: [
+        {
+          id: 'dotcom', label: 'Dot-Com\nStocks', years: '1997–2000',
+          size: 200, color: '#1a3a5c', textColor: 'white',
+          state: 'active', // active, popped, small
+          sector: 'Tech Stocks', fedAction: 'Fed cuts to 1%',
+          fedColor: '#c0392b', fedBg: 'rgba(192,57,43,0.1)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'housing', label: 'Housing', years: '(next)',
+          size: 60, color: '#d4870a', textColor: 'white',
+          state: 'small',
+          sector: 'Real Estate', fedAction: 'Not yet...',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'covid', label: 'Everything', years: '(future)',
+          size: 40, color: '#c0392b', textColor: 'white',
+          state: 'small',
+          sector: 'All Assets', fedAction: 'Not yet...',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'ai', label: 'AI\n& Tech', years: '(future)',
+          size: 30, color: '#7d3c98', textColor: 'white',
+          state: 'small',
+          sector: 'AI Valuations', fedAction: 'Not yet...',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        }
+      ],
+      narrative: [
+        {
+          color: '#1a3a5c',
+          label: 'What happened',
+          title: 'Tech stocks with no earnings soared',
+          text: 'Low rates in the late 1990s funded thousands of internet companies with no profits. The NASDAQ tripled in 3 years on pure speculation.',
+          stat: '78%', statLabel: 'NASDAQ lost after the crash'
+        },
+        {
+          color: '#c0392b',
+          label: "The Fed's response",
+          title: 'Cut rates to 1% — the lowest in decades',
+          text: 'To rescue the economy from the dot-com collapse, the Fed slashed the funds rate from 6.5% all the way down to 1% by 2003. It worked short-term.',
+          stat: '1%', statLabel: 'Fed funds rate by 2003'
+        },
+        {
+          color: '#d4870a',
+          label: 'What it set up',
+          title: 'Cheap mortgages flooded the housing market',
+          text: 'With borrowing nearly free, money had to go somewhere. It poured into real estate. Home prices started rising far above historical norms.',
+          stat: '↓', statLabel: 'Risk quietly transferred to housing'
+        }
+      ]
+    },
+    2: {
+      title: 'Era 2 — Housing Bubble',
+      bubbles: [
+        {
+          id: 'dotcom', label: 'Dot-Com\nStocks', years: 'POPPED 2000',
+          size: 80, color: '#8fa8c0', textColor: 'white',
+          state: 'popped',
+          sector: 'Tech Stocks', fedAction: 'Fed cut to 1%',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferred', visible: true },
+        {
+          id: 'housing', label: 'Housing\nMarket', years: '2003–2007',
+          size: 210, color: '#d4870a', textColor: 'white',
+          state: 'active',
+          sector: 'Real Estate + Banks', fedAction: 'Fed cuts to 0%',
+          fedColor: '#c0392b', fedBg: 'rgba(192,57,43,0.1)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'covid', label: 'Everything', years: '(next)',
+          size: 55, color: '#c0392b', textColor: 'white',
+          state: 'small',
+          sector: 'All Assets', fedAction: 'Not yet...',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'ai', label: 'AI\n& Tech', years: '(future)',
+          size: 30, color: '#7d3c98', textColor: 'white',
+          state: 'small',
+          sector: 'AI Valuations', fedAction: 'Not yet...',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        }
+      ],
+      narrative: [
+        {
+          color: '#d4870a',
+          label: 'What happened',
+          title: 'Home prices surged 70% above historical norms',
+          text: 'With mortgage rates near record lows, anyone could borrow. Banks packaged risky mortgages into securities and sold them globally. The entire financial system was exposed.',
+          stat: '70%', statLabel: 'Home price surge 2003–2006'
+        },
+        {
+          color: '#c0392b',
+          label: "The crash",
+          title: 'The entire financial system nearly collapsed',
+          text: 'Unlike dot-com, this bubble was woven into every bank\'s balance sheet. When it popped, it didn\'t just hurt homeowners — it triggered a global financial crisis.',
+          stat: '$11T', statLabel: 'U.S. household wealth destroyed'
+        },
+        {
+          color: '#1a3a5c',
+          label: "The Fed's response",
+          title: 'Cut to zero. And keep it there for 7 years.',
+          text: 'The Fed slashed rates to 0.25% — the lowest ever — and kept them there from 2008 to 2015. The rescue worked. But 7 years of zero rates set up the next, larger bubble.',
+          stat: '7 yrs', statLabel: 'Rates held near zero post-2008'
+        }
+      ]
+    },
+    3: {
+      title: 'Era 3 — The Everything Bubble',
+      bubbles: [
+        {
+          id: 'dotcom', label: 'Dot-Com', years: 'POPPED',
+          size: 60, color: '#8fa8c0', textColor: 'white',
+          state: 'popped',
+          sector: 'Tech Stocks', fedAction: 'Historical',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferred', visible: true },
+        {
+          id: 'housing', label: 'Housing', years: 'POPPED 2008',
+          size: 90, color: '#c49a30', textColor: 'white',
+          state: 'popped',
+          sector: 'Real Estate', fedAction: 'Historical',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferred', visible: true },
+        {
+          id: 'covid', label: 'Stocks\nCrypto\nEverything', years: '2020–2022',
+          size: 220, color: '#c0392b', textColor: 'white',
+          state: 'active',
+          sector: 'All Asset Classes', fedAction: 'Fed forced to hike',
+          fedColor: '#1a3a5c', fedBg: 'rgba(26,58,92,0.1)'
+        },
+        { type: 'arrow', label: 'risk\ntransfers', visible: false },
+        {
+          id: 'ai', label: 'AI\n& Tech', years: '(next)',
+          size: 55, color: '#7d3c98', textColor: 'white',
+          state: 'small',
+          sector: 'AI Valuations', fedAction: 'Building...',
+          fedColor: '#7d3c98', fedBg: 'rgba(125,60,152,0.08)'
+        }
+      ],
+      narrative: [
+        {
+          color: '#c0392b',
+          label: 'What happened',
+          title: 'Zero rates twice in 12 years inflated everything',
+          text: 'First 7 years of near-zero rates post-2008, then zero again for COVID. Stocks, crypto, real estate, private equity — all inflated simultaneously. There was nowhere safe to put money.',
+          stat: '400%', statLabel: 'S&P 500 gain 2009–2021'
+        },
+        {
+          color: '#c0392b',
+          label: "The consequence",
+          title: 'Inflation hit 9.1% — worst in 40 years',
+          text: 'Too much cheap money chasing too few goods. Ordinary Americans felt it at the grocery store, the gas pump, and in rent. This was the direct cost of three rounds of emergency rate cuts.',
+          stat: '9.1%', statLabel: 'Peak CPI inflation, June 2022'
+        },
+        {
+          color: '#1a3a5c',
+          label: "The Fed's forced response",
+          title: 'Fastest rate hikes in modern history',
+          text: 'The Fed raised rates from 0% to 5.5% in just 16 months — the fastest tightening since Volcker in the 1980s. It partially worked. But the damage was done — and AI was already inflating.',
+          stat: '5.5%', statLabel: 'Peak rate reached July 2023'
+        }
+      ]
+    },
+    4: {
+      title: 'Era 4 — The AI Bubble (Now)',
+      bubbles: [
+        {
+          id: 'dotcom', label: 'Dot-Com', years: 'POPPED',
+          size: 50, color: '#8fa8c0', textColor: 'white',
+          state: 'popped',
+          sector: 'Tech Stocks', fedAction: 'Historical',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferred', visible: true },
+        {
+          id: 'housing', label: 'Housing', years: 'POPPED',
+          size: 70, color: '#c49a30', textColor: 'white',
+          state: 'popped',
+          sector: 'Real Estate', fedAction: 'Historical',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferred', visible: true },
+        {
+          id: 'covid', label: 'Everything', years: 'PARTIAL POP',
+          size: 100, color: '#c0392b', textColor: 'white',
+          state: 'popped',
+          sector: 'All Assets', fedAction: 'Historical',
+          fedColor: '#888', fedBg: 'rgba(0,0,0,0.06)'
+        },
+        { type: 'arrow', label: 'risk\ntransferring', visible: true },
+        {
+          id: 'ai', label: 'AI\n& Tech', years: '2023–?',
+          size: 180, color: '#7d3c98', textColor: 'white',
+          state: 'growing',
+          sector: 'AI Valuations', fedAction: 'Fed under political pressure',
+          fedColor: '#7d3c98', fedBg: 'rgba(125,60,152,0.1)'
+        }
+      ],
+      narrative: [
+        {
+          color: '#7d3c98',
+          label: 'What is happening now',
+          title: 'AI valuations have surged dramatically',
+          text: 'NVIDIA gained over 800% since 2022. AI infrastructure investment is booming. Valuations are running far ahead of actual revenue. The pattern looks familiar.',
+          stat: '800%+', statLabel: 'NVIDIA gain since 2022'
+        },
+        {
+          color: '#c0392b',
+          label: "The political threat",
+          title: 'The Fed is being pressured to cut rates again',
+          text: 'Political pressure is mounting on the Fed to lower rates. History shows exactly what happens when the Fed bends to this pressure — and the next bubble is already forming.',
+          stat: '?', statLabel: 'Will the Fed stay independent?'
+        },
+        {
+          color: '#1a3a5c',
+          label: "What history tells us",
+          title: 'Every previous bubble looked obvious in hindsight',
+          text: 'In 1999, dot-com stocks seemed unstoppable. In 2006, housing seemed like a safe bet. Each time, cheap money made the bubble look rational — until it wasn\'t.',
+          stat: '3×', statLabel: 'Full bubble cycles since 2000'
+        }
+      ]
+    }
+  };
+
+  let currentStage = 1;
+
+  function setStage(n) {
+    currentStage = n;
+    render();
+
+    // Update buttons
+    document.querySelectorAll('.stage-btn').forEach((b, i) => {
+      b.classList.toggle('active', i + 1 === n);
+    });
+
+    // Update cards
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('card' + i).classList.toggle('active', i === n);
+    }
+
+    // Update progress
+    for (let i = 1; i <= 4; i++) {
+      const seg = document.getElementById('prog' + i);
+      seg.classList.toggle('done', i <= n);
+    }
+  }
+
+  function render() {
+    const data = stages[currentStage];
+    const row = document.getElementById('bubbleRow');
+    const narr = document.getElementById('narrativePanel');
+
+    // ── BUBBLES ──
+    row.innerHTML = '';
+    data.bubbles.forEach(b => {
+      if (b.type === 'arrow') {
+        const div = document.createElement('div');
+        div.className = 't-arrow' + (b.visible ? ' visible' : '');
+        div.innerHTML = `
+          <div class="arrow-body">
+            <div class="t-arrow-label">${b.label.replace('\n', '<br>')}</div>
+            <svg class="t-arrow-svg" viewBox="0 0 28 36">
+              <line x1="14" y1="0" x2="14" y2="26" stroke="#c0392b" stroke-width="2" opacity="0.6"/>
+              <polygon points="14,36 6,20 22,20" fill="rgba(192,57,43,0.6)"/>
+            </svg>
+          </div>`;
+        row.appendChild(div);
+        return;
+      }
+
+      // Build bubble styles
+      let borderStyle = `2.5px solid ${b.color}`;
+      let bgStyle = '';
+      let extraAnim = '';
+
+      if (b.state === 'popped') {
+        bgStyle = `background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.3), ${b.color}22);`;
+        borderStyle = `2px dashed ${b.color}66`;
+      } else if (b.state === 'active') {
+        bgStyle = `background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.55), ${b.color}44);`;
+        borderStyle = `3px solid ${b.color}bb`;
+        extraAnim = 'animation: bubblePulse 2.5s ease-in-out infinite;';
+      } else if (b.state === 'growing') {
+        bgStyle = `background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.5), ${b.color}40);`;
+        borderStyle = `2.5px dashed ${b.color}cc`;
+        extraAnim = 'animation: bubbleGrow 3s ease-in-out infinite;';
+      } else {
+        bgStyle = `background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.4), ${b.color}20);`;
+        borderStyle = `2px solid ${b.color}44`;
+      }
+
+      const opacity = b.state === 'popped' ? '0.4' : '1';
+      const fontSize = b.size > 150 ? '0.9rem' : b.size > 80 ? '0.75rem' : '0.6rem';
+
+      // Split label lines
+      const labelLines = b.label.split('\n').join('<br>');
+
+      const nameColor = b.state === 'popped' ? b.color : b.textColor;
+
+      // Fed action badge
+      const fedBadge = `<span class="bubble-status" style="background:${b.fedBg};color:${b.fedColor}">${b.fedAction}</span>`;
+
+      // Popped overlay
+      let poppedOverlay = '';
+      if (b.state === 'popped') {
+        const s = b.size;
+        const c = s / 2;
+        poppedOverlay = `
+          <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 ${s} ${s}">
+            <line x1="${c}" y1="${c}" x2="${c}" y2="4" stroke="${b.color}" stroke-width="1.5" opacity="0.5"/>
+            <line x1="${c}" y1="${c}" x2="${s - 4}" y2="4" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+            <line x1="${c}" y1="${c}" x2="${s - 4}" y2="${c}" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+            <line x1="${c}" y1="${c}" x2="${s - 4}" y2="${s - 4}" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+            <line x1="${c}" y1="${c}" x2="${c}" y2="${s - 4}" stroke="${b.color}" stroke-width="1.5" opacity="0.5"/>
+            <line x1="${c}" y1="${c}" x2="4" y2="${s - 4}" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+            <line x1="${c}" y1="${c}" x2="4" y2="${c}" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+            <line x1="${c}" y1="${c}" x2="4" y2="4" stroke="${b.color}" stroke-width="1.5" opacity="0.4"/>
+          </svg>`;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'bubble-unit';
+      div.innerHTML = `
+        <div class="bubble-circle" style="
+          width:${b.size}px;height:${b.size}px;
+          ${bgStyle}
+          border:${borderStyle};
+          box-shadow: 0 6px 28px ${b.color}33;
+          opacity:${opacity};
+          ${extraAnim}
+          position:relative;
+        ">
+          ${poppedOverlay}
+          <span class="bubble-name" style="font-size:${fontSize};color:${nameColor};">${labelLines}</span>
+          <span class="bubble-date" style="color:${nameColor};font-size:${Math.max(b.size * 0.065, 8)}px">${b.years}</span>
+        </div>
+        <div class="bubble-footer" style="width:${Math.max(b.size, 80)}px">
+          <span class="bubble-sector">${b.sector}</span>
+          ${fedBadge}
+        </div>`;
+      row.appendChild(div);
+    });
+
+    // ── NARRATIVE ──
+    narr.innerHTML = '';
+    data.narrative.forEach(n => {
+      const item = document.createElement('div');
+      item.className = 'narrative-item';
+      item.style.borderLeft = `3px solid ${n.color}`;
+      item.innerHTML = `
+        <span class="n-label" style="color:${n.color}">${n.label}</span>
+        <div class="n-title">${n.title}</div>
+        <div class="n-text">${n.text}</div>
+        <div class="n-stat">
+          <span style="color:${n.color}">${n.stat}</span>
+          ${n.statLabel}
+        </div>`;
+      narr.appendChild(item);
+    });
+  }
+
+  // CSS animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes bubblePulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    @keyframes bubbleGrow {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Initial render
+  render();
+</script>
+</body>
+</html>

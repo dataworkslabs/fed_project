@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fed Independence — The Last Line of Defense</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --blue: #1a3a5c;
+    --gold: #d4870a;
+    --green: #16a085;
+    --purple: #7d3c98;
+    --dark: #141414;
+    --bg: #f7f6f2;
+    --muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    padding: 40px 24px 60px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .header h1 em { color: var(--red); font-style: normal; }
+
+  .header p {
+    font-size: 0.97rem;
+    color: var(--muted);
+    margin-top: 10px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .thesis {
+    background: var(--blue);
+    color: white;
+    text-align: center;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    max-width: 860px;
+    margin: 18px auto 36px;
+    border-radius: 4px;
+    line-height: 1.6;
+  }
+
+  /* ── REPORT CARD GRID ── */
+  .report-grid {
+    max-width: 960px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .era-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e8e5e0;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: riseIn 0.6s forwards;
+  }
+
+  .era-card:nth-child(1) { animation-delay: 0.1s; }
+  .era-card:nth-child(2) { animation-delay: 0.3s; }
+  .era-card:nth-child(3) { animation-delay: 0.5s; }
+
+  @keyframes riseIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARD HEADER ── */
+  .card-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #f0ede8;
+  }
+
+  .card-header.captured { background: rgba(192,57,43,0.05); border-top: 4px solid var(--red); }
+  .card-header.independent { background: rgba(22,160,133,0.05); border-top: 4px solid var(--green); }
+  .card-header.threatened { background: rgba(125,60,152,0.05); border-top: 4px solid var(--purple); }
+
+  .chair-era {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .captured .chair-era { color: var(--red); }
+  .independent .chair-era { color: var(--green); }
+  .threatened .chair-era { color: var(--purple); }
+
+  .chair-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .chair-years {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* ── INDEPENDENCE METER ── */
+  .independence-section {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0ede8;
+  }
+
+  .independence-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .independence-meter {
+    height: 8px;
+    background: #f0ede8;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+  }
+
+  .independence-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .fill-low { background: var(--red); }
+  .fill-high { background: var(--green); }
+  .fill-med { background: var(--purple); }
+
+  .independence-desc {
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .independence-desc.low { color: var(--red); }
+  .independence-desc.high { color: var(--green); }
+  .independence-desc.med { color: var(--purple); }
+
+  /* ── STATS ── */
+  .stats-section {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0ede8;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-item {}
+
+  .stat-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-context {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 300;
+  }
+
+  .stat-bad { color: var(--red); }
+  .stat-good { color: var(--green); }
+  .stat-warn { color: var(--purple); }
+  .stat-neutral { color: var(--blue); }
+
+  /* ── NARRATIVE ── */
+  .narrative-section {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0ede8;
+  }
+
+  .narrative-section p {
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: #555;
+    font-weight: 300;
+  }
+
+  .narrative-section p strong { color: var(--dark); font-weight: 600; }
+
+  /* ── POLITICAL PRESSURE ── */
+  .pressure-section {
+    padding: 12px 20px;
+  }
+
+  .pressure-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .pressure-quote {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #555;
+    line-height: 1.5;
+    padding-left: 10px;
+    border-left: 2px solid #e0ddd8;
+  }
+
+  .pressure-quote.red { border-left-color: var(--red); color: var(--red); }
+  .pressure-quote.green { border-left-color: var(--green); color: #0e7a65; }
+  .pressure-quote.purple { border-left-color: var(--purple); color: var(--purple); }
+
+  /* ── OUTCOME BADGE ── */
+  .outcome-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 10px;
+  }
+
+  .outcome-bad { background: rgba(192,57,43,0.1); color: var(--red); }
+  .outcome-good { background: rgba(22,160,133,0.1); color: var(--green); }
+  .outcome-warn { background: rgba(125,60,152,0.1); color: var(--purple); }
+
+  /* ── COMPARISON BAR SECTION ── */
+  .comparison-section {
+    max-width: 960px;
+    margin: 32px auto 0;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e8e5e0;
+    overflow: hidden;
+    opacity: 0;
+    animation: riseIn 0.6s 0.7s forwards;
+  }
+
+  .comparison-header {
+    background: var(--dark);
+    color: white;
+    padding: 14px 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr;
+    border-bottom: 1px solid #f0ede8;
+    align-items: center;
+  }
+
+  .comparison-row:last-child { border-bottom: none; }
+  .comparison-row.header-row { background: #faf9f6; }
+
+  .comp-cell {
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    border-right: 1px solid #f0ede8;
+  }
+
+  .comp-cell:last-child { border-right: none; }
+
+  .comp-cell.metric {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .comp-cell.col-header {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .comp-cell.col-header.h-red { color: var(--red); }
+  .comp-cell.col-header.h-green { color: var(--green); }
+  .comp-cell.col-header.h-purple { color: var(--purple); }
+
+  .bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 10px;
+    background: #f0ede8;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 5px;
+  }
+
+  .bar-val {
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 36px;
+  }
+
+  /* ── CONCLUSION ── */
+  .conclusion {
+    max-width: 960px;
+    margin: 20px auto 0;
+    background: var(--dark);
+    color: white;
+    padding: 22px 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    opacity: 0;
+    animation: riseIn 0.6s 0.9s forwards;
+  }
+
+  .conclusion .icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+
+  .conclusion p {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.78);
+    font-weight: 300;
+  }
+
+  .conclusion p strong { color: #e8c56a; font-weight: 600; }
+
+  .source {
+    text-align: center;
+    font-size: 0.68rem;
+    color: #aaa;
+    margin-top: 20px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Independence Is the <em>Last Line of Defense</em></h1>
+  <p>The Fed's tools are blunt, its mandate is contradictory, and its decisions work on a delay. Political independence doesn't fix any of that — but losing it removes even the limited ability to manage those constraints.</p>
+</div>
+
+<div class="thesis">
+  History shows one clear pattern: when the Fed bends to political pressure, inflation spirals. When it stays independent, it can course-correct. The threat today is the same as 1971.
+</div>
+
+<!-- REPORT CARDS -->
+<div class="report-grid">
+
+  <!-- BURNS -->
+  <div class="era-card">
+    <div class="card-header captured">
+      <span class="chair-era">Politically Captured · 1970–1978</span>
+      <span class="chair-name">Arthur Burns</span>
+      <span class="chair-years">Fed Chair under Nixon & Ford</span>
+    </div>
+
+    <div class="independence-section">
+      <span class="independence-label">Fed Independence</span>
+      <div class="independence-meter">
+        <div class="independence-fill fill-low" style="width: 15%"></div>
+      </div>
+      <span class="independence-desc low">Critically Compromised</span>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-item">
+        <span class="stat-label">Peak Inflation</span>
+        <span class="stat-value stat-bad">13.5%</span>
+        <span class="stat-context">1979 — worst since WWII</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Peak Unemployment</span>
+        <span class="stat-value stat-bad">9%</span>
+        <span class="stat-context">Both goals failed simultaneously</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Avg Fed Rate</span>
+        <span class="stat-value stat-neutral">7.1%</span>
+        <span class="stat-context">Too low given inflation</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Outcome</span>
+        <span class="stat-value stat-bad" style="font-size:1rem; margin-top:4px">Stagflation</span>
+        <span class="stat-context">Inflation + unemployment together</span>
+      </div>
+    </div>
+
+    <div class="narrative-section">
+      <p>Nixon told Burns directly: <strong>"We'll take inflation."</strong> Burns complied, keeping rates artificially low before the 1972 election. The result was the worst peacetime inflation in American history — proof that political capture doesn't just compromise independence, it breaks the institution's ability to function.</p>
+    </div>
+
+    <div class="pressure-section">
+      <span class="pressure-label">Political pressure applied</span>
+      <div class="pressure-quote red">"You see to it — no recession." — Nixon to Burns, 1971</div>
+      <div class="outcome-badge outcome-bad">⚠ Mandate Failed</div>
+    </div>
+  </div>
+
+  <!-- VOLCKER -->
+  <div class="era-card">
+    <div class="card-header independent">
+      <span class="chair-era">Fully Independent · 1979–1987</span>
+      <span class="chair-name">Paul Volcker</span>
+      <span class="chair-years">Fed Chair under Carter & Reagan</span>
+    </div>
+
+    <div class="independence-section">
+      <span class="independence-label">Fed Independence</span>
+      <div class="independence-meter">
+        <div class="independence-fill fill-high" style="width: 92%"></div>
+      </div>
+      <span class="independence-desc high">Strongly Maintained</span>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-item">
+        <span class="stat-label">Peak Inflation</span>
+        <span class="stat-value stat-bad">14.8%</span>
+        <span class="stat-context">Inherited from Burns era</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Inflation After</span>
+        <span class="stat-value stat-good">3.2%</span>
+        <span class="stat-context">By 1983 — mission accomplished</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Peak Rate Used</span>
+        <span class="stat-value stat-neutral">20%</span>
+        <span class="stat-context">Unprecedented. Painful. Necessary.</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Outcome</span>
+        <span class="stat-value stat-good" style="font-size:1rem; margin-top:4px">Inflation broken</span>
+        <span class="stat-context">Short recession, long recovery</span>
+      </div>
+    </div>
+
+    <div class="narrative-section">
+      <p>Volcker raised rates to 20% — knowing it would cause a recession — and held them there despite massive political pressure, protests, and death threats. <strong>He did what was right for the long term over the short term.</strong> That's only possible with genuine independence from political cycles.</p>
+    </div>
+
+    <div class="pressure-section">
+      <span class="pressure-label">Political pressure applied — and resisted</span>
+      <div class="pressure-quote green">"We're not going to monetize the debt." — Volcker, refusing Reagan's Treasury requests</div>
+      <div class="outcome-badge outcome-good">✓ Mandate Restored</div>
+    </div>
+  </div>
+
+  <!-- POWELL -->
+  <div class="era-card">
+    <div class="card-header threatened">
+      <span class="chair-era">Independence Threatened · 2018–Now</span>
+      <span class="chair-name">Jerome Powell</span>
+      <span class="chair-years">Fed Chair under Trump & Biden</span>
+    </div>
+
+    <div class="independence-section">
+      <span class="independence-label">Fed Independence</span>
+      <div class="independence-meter">
+        <div class="independence-fill fill-med" style="width: 55%"></div>
+      </div>
+      <span class="independence-desc med">Under Active Pressure</span>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-item">
+        <span class="stat-label">Peak Inflation</span>
+        <span class="stat-value stat-bad">9.1%</span>
+        <span class="stat-context">June 2022 — worst in 40 years</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Inflation Now</span>
+        <span class="stat-value stat-warn">~3%</span>
+        <span class="stat-context">Coming down — but above target</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Rate Cuts Demanded</span>
+        <span class="stat-value stat-bad">Now</span>
+        <span class="stat-context">Before inflation fully controlled</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Outcome</span>
+        <span class="stat-value stat-warn" style="font-size:1rem; margin-top:4px">TBD</span>
+        <span class="stat-context">Depends on independence holding</span>
+      </div>
+    </div>
+
+    <div class="narrative-section">
+      <p>Trump has publicly demanded rate cuts before inflation is fully controlled — the same dynamic as Nixon/Burns. <strong>If Powell bends, the variance problem gets dramatically worse.</strong> A rate cut now, with inflation still above target, risks reigniting the cycle. History is rhyming loudly.</p>
+    </div>
+
+    <div class="pressure-section">
+      <span class="pressure-label">Political pressure applied — outcome unknown</span>
+      <div class="pressure-quote purple">"I know interest rates better than they do." — Trump, 2019 & 2024</div>
+      <div class="outcome-badge outcome-warn">⚡ Still Unfolding</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMPARISON TABLE -->
+<div class="comparison-section">
+  <div class="comparison-header">Side by Side: Independence vs. Outcomes</div>
+
+  <div class="comparison-row header-row">
+    <div class="comp-cell metric">Metric</div>
+    <div class="comp-cell col-header h-red">Burns (Captured)</div>
+    <div class="comp-cell col-header h-green">Volcker (Independent)</div>
+    <div class="comp-cell col-header h-purple">Powell (Threatened)</div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="comp-cell metric">Peak Inflation</div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:92%;background:var(--red)"></div></div>
+        <span class="bar-val" style="color:var(--red)">13.5%</span>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--green)"></div></div>
+        <span class="bar-val" style="color:var(--green)">3.2%</span>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--purple)"></div></div>
+        <span class="bar-val" style="color:var(--purple)">9.1%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="comp-cell metric">Fed Independence Score</div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--red)"></div></div>
+        <span class="bar-val" style="color:var(--red)">Low</span>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:92%;background:var(--green)"></div></div>
+        <span class="bar-val" style="color:var(--green)">High</span>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--purple)"></div></div>
+        <span class="bar-val" style="color:var(--purple)">Medium</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="comp-cell metric">Mandate Outcome</div>
+    <div class="comp-cell" style="font-size:0.78rem;font-weight:600;color:var(--red)">Both goals failed — stagflation</div>
+    <div class="comp-cell" style="font-size:0.78rem;font-weight:600;color:var(--green)">Inflation broken despite short recession</div>
+    <div class="comp-cell" style="font-size:0.78rem;font-weight:600;color:var(--purple)">Partially recovered — but under threat</div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="comp-cell metric">Key Lesson</div>
+    <div class="comp-cell" style="font-size:0.75rem;color:#666">Political pressure breaks the institution's ability to function at all</div>
+    <div class="comp-cell" style="font-size:0.75rem;color:#666">Independence allows painful but necessary long-term decisions</div>
+    <div class="comp-cell" style="font-size:0.75rem;color:#666">History is rhyming. The pattern is recognizable.</div>
+  </div>
+
+</div>
+
+<!-- CONCLUSION -->
+<div class="conclusion">
+  <span class="icon">⚠️</span>
+  <p>
+    <strong>Independence doesn't fix the dual mandate's structural problems.</strong> The contradiction between inflation and unemployment goals is still there. The 18-month lag still increases variance. The blunt tool problem remains. But independence is what allows the Fed to make the right long-term call even when it's politically painful. <strong>Burns showed what happens when that's gone: both goals fail simultaneously.</strong> Volcker showed what's possible when it holds. Powell is facing the same choice right now — and the outcome will determine whether the next bubble cycle is manageable or catastrophic.
+  </p>
+</div>
+
+<div class="source">
+  Data: Federal Reserve FRED API · Bureau of Labor Statistics · Federal Reserve Board meeting transcripts · Nixon White House tapes
+</div>
+
+</body>
+</html>
